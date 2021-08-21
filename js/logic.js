@@ -51,9 +51,7 @@ function findCost() {
                 //     `${enchant} ${target.enchantments[enchant]} + ${sacrifice.enchantments[enchant]}`
                 // );
                 //If sacrifice level is equal, the target gains one level, unless it is already at the maximum level for that enchantment.
-                if (
-                    target.enchantments[enchant] ==
-                    sacrifice.enchantments[enchant]
+                if (target.enchantments[enchant] == sacrifice.enchantments[enchant]
                 ) {
                     target.enchantments[enchant] = Math.min(
                         target.enchantments[enchant] + 1,
@@ -61,12 +59,9 @@ function findCost() {
                     );
                 }
                 //If sacrifice level is greater, the target is raised to the sacrifice's level
-                else if (
-                    target.enchantments[enchant] <
-                    sacrifice.enchantments[enchant]
+                else if (target.enchantments[enchant] < sacrifice.enchantments[enchant]
                 ) {
-                    target.enchantments[enchant] =
-                        sacrifice.enchantments[enchant];
+                    target.enchantments[enchant] = sacrifice.enchantments[enchant];
                 }
             }
             //If the target does not have the enchantment, it gains all levels of that enchantment

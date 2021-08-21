@@ -1,0 +1,107 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <title>Anvil Calculator</title>
+    <style>
+        button.selected {
+            background-color: red;
+        }
+    </style>
+    <script type="text/html" id="toolSelectorView">
+        <div>
+            <h1>{{title}}</h1>
+            <div style="display:inline-block">
+                <select v-model="inputTool.selectedTool" @change="inputTool.onChanged()">
+                    <option disabled value="">Please select one</option>
+                    <option v-bind:value="tool" v-for="tool in allTools">
+                        {{ tool.name }}
+                    </option>
+                </select>
+                <div>
+                    <input type="checkbox" v-model="inputTool.isDamaged"> Damaged
+                </div>
+                <div>
+                    Prior Work Penalty
+                    <input v-model.number="inputTool.priorWorkPenalty" type="number">
+                </div>
+            </div>
+            <div v-if="inputTool.selectedTool">
+                <div v-for="enchantment in inputTool.selectedTool.applicableEnchantments">
+                    <div>
+                        {{enchantment.name}}
+                        <button v-bind:class="{  selected  : enchantment.isLevelSelected(level) }"
+                                v-for="level in enchantment.maxLevel"
+                                v-on:click="enchantment.setLevel(level)">
+                            {{ level }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="anvilCalculator">
+        <div>
+            <div>
+                <tool-selector v-bind:title="calculator.inputData.swap ? 'Sacrifice' : 'Target' "
+                               v-bind:all-tools="calculator.data.targetTools"
+                               v-bind:input-tool="calculator.inputData.target" />
+    
+            </div>
+            <div>
+                <tool-selector v-bind:title="calculator.inputData.swap ? 'Target' : 'Sacrifice'"
+                               v-bind:all-tools="calculator.data.sacrificeTools"
+                               v-bind:input-tool="calculator.inputData.sacrifice" />
+    
+            </div>
+    
+            <div>
+                <input type="checkbox" v-model="calculator.inputData.sync"><span title="Change both tools">&nbsp;Sync</span>
+            </div>
+    
+            <div>
+                <input type="checkbox" v-model="calculator.inputData.swap"><span title="Swap target and sacrifice">&nbsp;Swap</span>
+            </div>
+            <button v-on:click="calculator.startCostCalculation">Enchant!</button>
+    
+            <div>
+                <div v-for="logLine in calculator.outputLog">{{logLine}}</div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="optimalEnchantOrderCalculator">
+        <div>
+            <h1>optimalEnchantOrderCalculator</h1>
+            <div>
+                <tool-selector v-bind:title="'Starting Item'"
+                               v-bind:all-tools="orderCalculator.data.targetTools"
+                               v-bind:input-tool="orderCalculator.inputData.target" />
+            </div>
+            
+        </div>
+    </script>
+</head>
+
+<body>
+    <div id="anvilCalculatorApp">
+        <div>
+            <div v-if="isVisibleAnvilCalculator">                
+                <button v-on:click="selectOptimalEnchantOrderCalculator()">OptimalEnchantOrderCalculator</button>
+                <anvil-calculator />
+            </div>
+
+            <div v-if="isOptimalEnchantOrderCalculator">
+                <button v-on:click="selectAnvilCalculator()">AnvilCalculator</button>
+                <optimal-enchant-order-calculator />
+            </div>
+        </div>
+
+    </div>
+    <script src="js/dataProvider.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/anvilCalculatorApp.js"></script>
+</body>
+
+</html>
